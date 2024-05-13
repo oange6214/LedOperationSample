@@ -51,7 +51,7 @@ public partial class EditModeViewModel : ObservableRecipient
     [ObservableProperty] private string _modeName;
     [ObservableProperty] private int _selectedModeIndex;
     [ObservableProperty] private ModeModel _selectedModeItem;
-    public ObservableCollection<ModeModel> ModeModelList { get; set; } = [];
+    public ObservableCollection<ModeModel> ModeList { get; set; } = [];
 
     #endregion
 
@@ -155,7 +155,7 @@ public partial class EditModeViewModel : ObservableRecipient
         }
 
         await _file.SaveAsync(Mode, $"{Mode.Name}.json");
-        ModeModelList.Add(Mode);
+        ModeList.Add(Mode);
 
         ClearModeDetails();
 

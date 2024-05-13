@@ -22,13 +22,8 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto" />
                 <ColumnDefinition />
+                <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
-
-            <!--  Black backgroun  -->
-            <ContentControl
-                Grid.ColumnSpan="2"
-                Panel.ZIndex="99"
-                Content="{Binding PageContent, Mode=TwoWay}" />
 
             <!--  Light graph  -->
             <Grid
@@ -90,7 +85,7 @@
                 <Grid Margin="5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
-                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition />
                     </Grid.ColumnDefinitions>
 
                     <!--  Mode list  -->
@@ -98,7 +93,7 @@
                         x:Name="ModeListView"
                         Grid.Column="0"
                         Margin="5,5,5,0"
-                        ItemsSource="{Binding ModeModelList}"
+                        ItemsSource="{Binding ModeList}"
                         ScrollViewer.VerticalScrollBarVisibility="Auto"
                         SelectedItem="{Binding SelectedModeItem}">
                         <ListView.ItemTemplate>
@@ -108,49 +103,43 @@
                         </ListView.ItemTemplate>
                     </ListView>
 
-                    <!--  Controls  -->
-                    <StackPanel
+                    <!--  Active List  -->
+                    <ListView
+                        x:Name="ActiveListView"
                         Grid.Column="1"
-                        Width="150"
-                        Margin="5">
-
-                        <Button
-                            Height="50"
-                            Command="{Binding AddModeCommand}"
-                            Content="Add Mode" />
-                        <Button
-                            Height="50"
-                            Command="{Binding EditModeCommand}"
-                            Content="Edit Mode" />
-                        <Button
-                            Height="50"
-                            Command="{Binding ReadModeCommand}"
-                            Content="Read Mode" />
-                        <Button
-                            Height="50"
-                            Background="LightPink"
-                            Command="{Binding RemoveModeCommand}"
-                            Content="Remove Mode"
-                            IsEnabled="{Binding ElementName=ModeListView, Path=SelectedItems.Count}" />
-
-                        <Separator Margin="5" />
-
-                        <Button
-                            Height="50"
-                            Background="LightGreen"
-                            Command="{Binding StartModeCommand}"
-                            Content="Start Mode"
-                            IsEnabled="{Binding ElementName=ModeListView, Path=SelectedItems.Count}" />
-                        <Button
-                            Height="50"
-                            Command="{Binding CancelJobCommand}"
-                            Content="Stop Mode"
-                            IsEnabled="{Binding ElementName=ModeListView, Path=SelectedItems.Count}" />
-
-                    </StackPanel>
+                        Margin="5,5,5,0"
+                        ItemsSource="{Binding ActiveModeList}"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto"
+                        SelectedItem="{Binding SelectedModeItem}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate DataType="{x:Type model:ModeModel}">
+                                <TextBlock Text="{Binding Name}" />
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
 
                 </Grid>
             </GroupBox>
+
+            <!--  Controls  -->
+            <StackPanel
+                Grid.Column="2"
+                Width="150"
+                Margin="5">
+
+                <Button
+                    Height="50"
+                    Background="LightGreen"
+                    Command="{Binding StartModeCommand}"
+                    Content="Start Run"
+                    IsEnabled="{Binding ElementName=ModeListView, Path=SelectedItems.Count}" />
+                <Button
+                    Height="50"
+                    Command="{Binding CancelJobCommand}"
+                    Content="Stop Run"
+                    IsEnabled="{Binding ElementName=ModeListView, Path=SelectedItems.Count}" />
+
+            </StackPanel>
         </Grid>
 
     </Border>

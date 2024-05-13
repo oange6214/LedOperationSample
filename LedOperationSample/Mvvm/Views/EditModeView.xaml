@@ -10,12 +10,6 @@
     d:DataContext="{d:DesignInstance viewmodels:EditModeViewModel}"
     mc:Ignorable="d">
 
-    <UserControl.InputBindings>
-        <KeyBinding
-            Key="Esc"
-            Command="{Binding CloseViewCommand}" />
-    </UserControl.InputBindings>
-
     <UserControl.Resources>
         <ResourceDictionary>
             <converters:EnumToStringConverter x:Key="EnumToStringConverter" />

@@ -13,7 +13,14 @@
     mc:Ignorable="d">
 
     <Border d:Background="White">
-        <views:JobView />
+        <TabControl>
+            <TabItem Header="Job Overview">
+                <views:JobView />
+            </TabItem>
+            <TabItem Header="Create Recipe">
+                <views:RecipeView />
+            </TabItem>
+        </TabControl>
     </Border>
 
 </Window>

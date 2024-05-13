@@ -2,8 +2,8 @@
 .vscode/
 
 # Build results
-bin/
-obj/
+[Bb]in/
+[Ob]bj/
 
 # NuGet packages
 packages/

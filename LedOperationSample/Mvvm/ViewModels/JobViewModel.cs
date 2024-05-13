@@ -8,7 +8,6 @@ using LedOperationSample.Mvvm.Views;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows;
-using System.Windows.Media.Media3D;
 
 namespace LedOperationSample.Mvvm.ViewModels;
 
@@ -29,7 +28,8 @@ public partial class JobViewModel : ObservableRecipient
 
     public ObservableCollection<LightModel> Lights { get; set; } = [];
     public ObservableCollection<string> StateLogList { get; set; } = [];
-    public ObservableCollection<ModeModel> ModeModelList { get; set; } = [];
+    public ObservableCollection<ModeModel> ModeList { get; set; } = [];
+    public ObservableCollection<ModeModel> ActiveMode { get; set; } = [];
 
     #endregion
 
@@ -48,40 +48,6 @@ public partial class JobViewModel : ObservableRecipient
     }
 
     #region Commands
-
-    [RelayCommand]
-    private void ReadMode()
-    {
-        ModeModelList.Clear();
-
-        var modes = _file.ReadAll<ModeModel>();
-
-        if (modes.Count == 0)
-        {
-            MessageBox.Show("No modes found. Please create a mode.");
-            return;
-        }
-
-        foreach (var mode in modes)
-        {
-            ModeModelList.Add(mode);
-        }
-    }    
-    
-    [RelayCommand]
-    private void RemoveMode()
-    {
-        if (ModeModelList.Count == 0)
-        {
-            MessageBox.Show("Cannot delete because list is empty.");
-            return;
-        }
-
-        ModeModelList.Clear();
-        _file.DeleteAllFiles();
-
-        MessageBox.Show("All schemas have been successfully removed.");
-    }
 
     [RelayCommand]
     private async Task StartMode()
@@ -113,28 +79,26 @@ public partial class JobViewModel : ObservableRecipient
         _cancellationTokenSource?.Cancel();
 
         InitLightState(Lights);
-    }    
-    
-    [RelayCommand]
-    private void AddMode()
-    {
-        PageContent = new CreateModeView();
     }
 
     [RelayCommand]
-    private void EditMode()
+    private void ReadMode()
     {
-        if (SelectedModeItem == null)
+        ModeList.Clear();
+
+        var modes = _file.ReadAll<ModeModel>();
+
+        if (modes.Count == 0)
         {
-            MessageBox.Show("No mode was selected.");
+            MessageBox.Show("No modes found. Please create a mode.");
             return;
         }
 
-        PageContent = new EditModeView()
+        foreach (var mode in modes)
         {
-            DataContext = new EditModeViewModel(SelectedModeItem)
-        };
-    }
+            ModeList.Add(mode);
+        }
+    }    
 
     [RelayCommand]
     private void CleanUI()
@@ -152,7 +116,7 @@ public partial class JobViewModel : ObservableRecipient
 
         foreach (var mode in modes)
         {
-            ModeModelList.Add(mode);
+            ModeList.Add(mode);
         }
     }
 

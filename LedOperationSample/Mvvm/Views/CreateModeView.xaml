@@ -9,12 +9,6 @@
     xmlns:viewmodels="clr-namespace:LedOperationSample.Mvvm.ViewModels"
     mc:Ignorable="d">
 
-    <UserControl.InputBindings>
-        <KeyBinding
-            Key="Esc"
-            Command="{Binding CloseViewCommand}" />
-    </UserControl.InputBindings>
-
     <UserControl.DataContext>
         <viewmodels:CreateModeViewModel />
     </UserControl.DataContext>

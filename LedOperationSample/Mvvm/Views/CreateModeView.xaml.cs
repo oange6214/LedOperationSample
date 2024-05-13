@@ -8,9 +8,6 @@ namespace LedOperationSample.Mvvm.Views
         public CreateModeView()
         {
             InitializeComponent();
-
-            Focusable = true;
-            Loaded += (s, e) => Keyboard.Focus(this);
         }
     }
 }

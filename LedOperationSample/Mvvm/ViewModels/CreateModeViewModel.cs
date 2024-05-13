@@ -44,7 +44,7 @@ public partial class CreateModeViewModel : ObservableRecipient
     [ObservableProperty] private bool _isAutoGenName = true;
     [ObservableProperty] private string _modeName;
     [ObservableProperty] private int _modeCount = 2;
-    public ObservableCollection<ModeModel> ModeModelList { get; } = [];
+    public ObservableCollection<ModeModel> ModeList { get; } = [];
 
     #endregion
 
@@ -180,7 +180,7 @@ public partial class CreateModeViewModel : ObservableRecipient
 
         await _file.SaveAsync(mode, $"{mode.Name}.json");
 
-        ModeModelList.Add(mode);
+        ModeList.Add(mode);
 
         ClearModeDetails();
         CloseView();
