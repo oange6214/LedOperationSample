@@ -6,6 +6,7 @@ using LedOperationSample.Helplers;
 using LedOperationSample.Mvvm.Models;
 using LedOperationSample.Mvvm.Views;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
 
@@ -23,13 +24,19 @@ public partial class JobViewModel : ObservableRecipient
 
     #region Properties
 
+    [ObservableProperty] private int _selectedEngineIndex;
+    [ObservableProperty] private ModeModel _selectedEngineItem;
+    [ObservableProperty] private LightModel _selectedLedItem;
+    [ObservableProperty] private int _modeNum = 1;
     [ObservableProperty] private object _pageContent;
     [ObservableProperty] private ModeModel _selectedModeItem;
+    [ObservableProperty] private List<ModeModel> _modeCombobox;
 
     public ObservableCollection<LightModel> Lights { get; set; } = [];
+    public ObservableCollection<LightModel> LightListBox { get; set; } = [];
     public ObservableCollection<string> StateLogList { get; set; } = [];
     public ObservableCollection<ModeModel> ModeList { get; set; } = [];
-    public ObservableCollection<ModeModel> ActiveMode { get; set; } = [];
+    public ObservableCollection<ModeModel> ActiveModeList { get; set; } = [];
 
     #endregion
 
@@ -43,8 +50,23 @@ public partial class JobViewModel : ObservableRecipient
 
         _file = new FileHelper("ModeFile");
 
+        PropertyChanged += OnPropertyChanged;
+
         GeneralLightState();
         GetModes();
+    }
+
+    private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        switch (e.PropertyName)
+        {
+            case nameof(ModeNum):
+                if (ModeNum > 0)
+                {
+                    ModeCombobox = ModeList.Take(ModeNum).ToList();
+                }
+                break;
+        }
     }
 
     #region Commands
@@ -103,8 +125,15 @@ public partial class JobViewModel : ObservableRecipient
     [RelayCommand]
     private void CleanUI()
     {
-        InitLightState(Lights);
+        //InitLightState(Lights);
         StateLogList.Clear();
+    }
+
+    [RelayCommand]
+    private void EngineItem(LightModel light)
+    {
+        light.Mode = SelectedEngineItem.Copy();
+        LightListBox.Add(light);
     }
     #endregion
 
@@ -118,6 +147,8 @@ public partial class JobViewModel : ObservableRecipient
         {
             ModeList.Add(mode);
         }
+
+        ModeCombobox = ModeList.Take(ModeNum).ToList();
     }
 
     private void GeneralLightState()

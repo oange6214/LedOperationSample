@@ -55,16 +55,17 @@
 
                     <Button
                         Height="50"
+                        Command="{Binding ReadModeCommand}"
+                        Content="Read Mode" />
+                    <Button
+                        Height="50"
                         Command="{Binding AddModeCommand}"
                         Content="Add Mode" />
                     <Button
                         Height="50"
                         Command="{Binding EditModeCommand}"
-                        Content="Edit Mode" />
-                    <Button
-                        Height="50"
-                        Command="{Binding ReadModeCommand}"
-                        Content="Read Mode" />
+                        Content="Edit Mode"
+                        IsEnabled="{Binding ElementName=ModeListView, Path=SelectedItems.Count}" />
                     <Button
                         Height="50"
                         Background="LightPink"

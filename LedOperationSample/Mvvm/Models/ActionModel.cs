@@ -8,4 +8,9 @@ public class ActionModel
     public TargetType Target { get; set; }
     public ActionType Type { get; set; }
     public string Value { get; set; }
+
+    public ActionModel Copy()
+    {
+        return (ActionModel)this.MemberwiseClone();
+    }
 }

@@ -5,7 +5,6 @@ using LedOperationSample.Commons;
 using LedOperationSample.Helplers;
 using LedOperationSample.Mvvm.Models;
 using System.Collections.ObjectModel;
-using System.Text;
 using System.Windows;
 
 namespace LedOperationSample.Mvvm.ViewModels;

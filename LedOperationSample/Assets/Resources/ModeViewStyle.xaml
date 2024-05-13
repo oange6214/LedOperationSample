@@ -8,22 +8,31 @@
         TargetType="{x:Type ToggleButton}">
 
         <Style.Resources>
-            <SolidColorBrush x:Key="LightOnBrush">Green</SolidColorBrush>
-            <SolidColorBrush x:Key="LightOffBrush">DarkGray</SolidColorBrush>
+            <SolidColorBrush
+                x:Key="LightOnBrush"
+                Color="{x:Static Colors.Green}" />
+
+            <SolidColorBrush
+                x:Key="LightOffBrush"
+                Color="{x:Static Colors.DarkGray}" />
+
         </Style.Resources>
 
+        <!--<Setter Property="Width" Value="{TemplateBinding Width}" />-->
+        <!--<Setter Property="Height" Value="{TemplateBinding Height}" />-->
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ToggleButton}">
                     <Border x:Name="border">
                         <Grid>
-                            <Ellipse
+                            <Border
                                 x:Name="led"
-                                Width="100"
-                                Height="100"
+                                Width="{TemplateBinding Width}"
+                                Height="{TemplateBinding Height}"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                Fill="{StaticResource LightOnBrush}" />
+                                Background="{StaticResource LightOnBrush}"
+                                CornerRadius="5" />
                             <ContentPresenter
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center" />
@@ -31,7 +40,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked" Value="False">
-                            <Setter TargetName="led" Property="Fill" Value="{StaticResource LightOffBrush}" />
+                            <Setter TargetName="led" Property="Background" Value="{StaticResource LightOffBrush}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
