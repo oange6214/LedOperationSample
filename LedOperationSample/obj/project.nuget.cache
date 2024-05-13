@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "rFUob0sPLeIG2+Ul2XJERcN0hVC14H7AgGi8eaGB+co7bHlO5qkLp4ZvJjhHI2Agm/XatBvBLFxvYAwCYXsuCw==",
+  "success": true,
+  "projectFilePath": "D:\\Demo\\LedOperationSample\\LedOperationSample\\LedOperationSample.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\pohan_lin\\.nuget\\packages\\communitytoolkit.mvvm\\8.2.2\\communitytoolkit.mvvm.8.2.2.nupkg.sha512",
+    "C:\\Users\\pohan_lin\\.nuget\\packages\\system.text.encodings.web\\8.0.0\\system.text.encodings.web.8.0.0.nupkg.sha512",
+    "C:\\Users\\pohan_lin\\.nuget\\packages\\system.text.json\\8.0.3\\system.text.json.8.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
