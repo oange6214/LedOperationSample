@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace LedOperationSample.Mvvm.Views
 {
@@ -7,6 +8,9 @@ namespace LedOperationSample.Mvvm.Views
         public CreateModeView()
         {
             InitializeComponent();
+
+            Focusable = true;
+            Loaded += (s, e) => Keyboard.Focus(this);
         }
     }
 }

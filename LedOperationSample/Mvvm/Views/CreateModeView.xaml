@@ -9,6 +9,12 @@
     xmlns:viewmodels="clr-namespace:LedOperationSample.Mvvm.ViewModels"
     mc:Ignorable="d">
 
+    <UserControl.InputBindings>
+        <KeyBinding
+            Key="Esc"
+            Command="{Binding CloseViewCommand}" />
+    </UserControl.InputBindings>
+
     <UserControl.DataContext>
         <viewmodels:CreateModeViewModel />
     </UserControl.DataContext>
@@ -86,7 +92,7 @@
                         <!--<ColumnDefinition />-->
                     </Grid.ColumnDefinitions>
 
-                    <!--  Action  -->
+                    <!--  Action Panel  -->
                     <GroupBox
                         Grid.Column="0"
                         Margin="5,5,5,0"
@@ -161,12 +167,6 @@
                                     </ComboBox.ItemTemplate>
                                 </ComboBox>
 
-                                <!--<Button
-                                    Grid.Column="2"
-                                    Command="{Binding AddActionCommand}"
-                                    Content="Add"
-                                    Style="{StaticResource AddActionButtonStyle}" />-->
-
                             </Grid>
 
                             <!--  Value  -->
@@ -191,13 +191,6 @@
                                     VerticalContentAlignment="Center"
                                     Text="{Binding Value}" />
 
-
-                                <!--<Button
-                                    Grid.Column="3"
-                                    Background="LightGreen"
-                                    Command="{Binding AddDelayCommand}"
-                                    Content="Add" />-->
-
                                 <Button
                                     Grid.Column="2"
                                     Command="{Binding AddActionCommand}"
@@ -209,7 +202,7 @@
                             <ListBox
                                 Grid.Row="3"
                                 Margin="5,5,5,0"
-                                ItemsSource="{Binding ActionModelList}"
+                                ItemsSource="{Binding ActionList}"
                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                                 SelectedItem="{Binding SelectedActionItem}">
                                 <ListBox.ItemTemplate>
@@ -286,7 +279,14 @@
                                 Height="25"
                                 Margin="5,5,5,0"
                                 Command="{Binding CloseViewCommand}"
-                                Content="Cancel" />
+                                Content="Cancel">
+                                <!--<Button.InputBindings>
+                                    <KeyBinding
+                                        Key="Esc"
+                                        Command="{Binding CloseViewCommand}" />
+                                </Button.InputBindings>-->
+
+                            </Button>
                         </Grid>
 
                     </Grid>

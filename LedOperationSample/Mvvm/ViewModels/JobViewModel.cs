@@ -95,6 +95,8 @@ public partial class JobViewModel : ObservableRecipient
         _cancellationTokenSource = new CancellationTokenSource();
         CancellationToken cancellationToken = _cancellationTokenSource.Token;
 
+        StateLogList.Clear();
+
         try
         {
             await StartJob(cancellationToken);
@@ -134,6 +136,12 @@ public partial class JobViewModel : ObservableRecipient
         };
     }
 
+    [RelayCommand]
+    private void CleanUI()
+    {
+        InitLightState(Lights);
+        StateLogList.Clear();
+    }
     #endregion
 
     #region Private Methods

@@ -1,0 +1,12 @@
+# Visual Studio Code
+.vscode/
+
+# Build results
+bin/
+obj/
+
+# NuGet packages
+packages/
+
+# tempfile
+.vs/

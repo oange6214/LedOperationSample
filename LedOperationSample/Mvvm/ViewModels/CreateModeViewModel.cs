@@ -22,7 +22,6 @@ public partial class CreateModeViewModel : ObservableRecipient
 
 
     [ObservableProperty] private string _value;
-    [ObservableProperty] private ActionType _actionTypeTEST = ActionType.Turn;
 
     // Target-related properties
     [ObservableProperty] private TargetType _selectedTargetItem;
@@ -32,7 +31,7 @@ public partial class CreateModeViewModel : ObservableRecipient
     [ObservableProperty] private ActionModel _selectedActionItem;
     [ObservableProperty] private ActionType _selectedActionTypeItem;
     public ObservableCollection<ActionType> ActionTypeList { get; } = [];
-    public ObservableCollection<ActionModel> ActionModelList { get; } = [];
+    public ObservableCollection<ActionModel> ActionList { get; } = [];
 
 
     // Step-related properties
@@ -58,7 +57,6 @@ public partial class CreateModeViewModel : ObservableRecipient
     }
 
     #region Commands
-
     [RelayCommand]
     private void AddAction()
     {
@@ -67,7 +65,7 @@ public partial class CreateModeViewModel : ObservableRecipient
             SelectedActionTypeItem,
             Value);
 
-        ActionModelList.Add(action);
+        ActionList.Add(action);
     }
 
     //[RelayCommand]
@@ -84,7 +82,7 @@ public partial class CreateModeViewModel : ObservableRecipient
     //        ActionType.Delay, 
     //        Delay.ToString());
 
-    //    ActionModelList.Add(action);
+    //    ActionList.Add(action);
     //}
 
     [RelayCommand]
@@ -96,8 +94,8 @@ public partial class CreateModeViewModel : ObservableRecipient
             return;
         }
 
-        SelectedStepItem.Actions = ActionModelList.ToList();
-        ActionModelList.Clear();
+        SelectedStepItem.Actions = ActionList.ToList();
+        ActionList.Clear();
     }
 
     [RelayCommand]
@@ -109,31 +107,31 @@ public partial class CreateModeViewModel : ObservableRecipient
             return;
         }
 
-        ActionModelList.Remove(SelectedActionItem);
+        ActionList.Remove(SelectedActionItem);
     }
 
     [RelayCommand]
     private void CaptureAction()
     {
-        if (ActionModelList.Count == 0)
+        if (ActionList.Count == 0)
         {
             MessageBox.Show("Please set actions.");
             return;
         }
 
-        if (!ActionModelList.Any(s => s.Type == ActionType.Delay))
+        if (!ActionList.Any(s => s.Type == ActionType.Delay))
         {
             MessageBox.Show("Please set delay.");
             return;
         }
 
-        string concatenatedString = BuildConcatenatedString() + Constants.LinkString;
+        string concatenatedString = BuildConcatenatedString(ActionList);
 
         var step = new StepModel
         {
             StepId = Guid.NewGuid(),
             Name = $"S_{Guid.NewGuid().ToString()[..^3]}",
-            Actions = [.. ActionModelList]
+            Actions = [.. ActionList]
         };
 
         StepModelList.Add(step);
@@ -206,7 +204,10 @@ public partial class CreateModeViewModel : ObservableRecipient
 
         return new ObservableCollection<ActionType>(actionTypes);
     }
-    private ActionModel CreateAction(TargetType targetType, ActionType actionType, string value)
+    private ActionModel CreateAction(
+        TargetType targetType, 
+        ActionType actionType, 
+        string value)
     {
         if (string.IsNullOrEmpty(value))
         {
@@ -222,13 +223,13 @@ public partial class CreateModeViewModel : ObservableRecipient
             Value = value,
         };
     }
-    private string BuildConcatenatedString()
+    private string BuildConcatenatedString(IEnumerable<ActionModel> actions)
     {
-        return string.Join("+", ActionModelList.Select(action => $"{action.Target}.{action.Type}"));
+        return string.Join("+", actions.Select(action => $"{action.Target}.{action.Type}")) + Constants.LinkString;
     }
     private void ClearActionList()
     {
-        ActionModelList.Clear();
+        ActionList.Clear();
         Value = string.Empty;
     }
     private void ClearModeDetails()

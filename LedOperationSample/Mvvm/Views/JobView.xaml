@@ -31,13 +31,18 @@
                 Content="{Binding PageContent, Mode=TwoWay}" />
 
             <!--  Light graph  -->
-            <Grid Grid.Column="0">
+            <Grid
+                Grid.Column="0"
+                Margin="5">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
                     <RowDefinition />
+                    <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
 
-                <Border Grid.Row="0">
+                <Border
+                    Grid.Row="0"
+                    Margin="5,5,5,0">
                     <ItemsControl ItemsSource="{Binding Lights}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -61,7 +66,7 @@
                 <GroupBox
                     Grid.Row="1"
                     Height="210"
-                    Margin="5"
+                    Margin="5,5,5,0"
                     Header="State">
                     <ListView
                         Margin="5"
@@ -69,6 +74,12 @@
                         ScrollViewer.CanContentScroll="True"
                         ScrollViewer.VerticalScrollBarVisibility="Auto" />
                 </GroupBox>
+
+                <Button
+                    Grid.Row="2"
+                    Margin="5"
+                    Command="{Binding CleanUICommand}"
+                    Content="Clean" />
             </Grid>
 
             <!--  List & Controls  -->

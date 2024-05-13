@@ -10,6 +10,11 @@
     d:DataContext="{d:DesignInstance viewmodels:EditModeViewModel}"
     mc:Ignorable="d">
 
+    <UserControl.InputBindings>
+        <KeyBinding
+            Key="Esc"
+            Command="{Binding CloseViewCommand}" />
+    </UserControl.InputBindings>
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -99,7 +104,7 @@
                                 x:Name="StepsListBox"
                                 Grid.Row="0"
                                 Margin="5,5,5,0"
-                                ItemsSource="{Binding StepModelList}"
+                                ItemsSource="{Binding StepList}"
                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                                 SelectedItem="{Binding SelectedStepItem}">
                                 <ListBox.ItemTemplate>
@@ -140,12 +145,13 @@
                         Grid.Row="2"
                         Margin="5,5,5,0"
                         Header="Action">
+
                         <Grid Margin="5">
                             <Grid.RowDefinitions>
                                 <RowDefinition />
                                 <RowDefinition />
                                 <RowDefinition />
-                                <RowDefinition Height="120" />
+                                <RowDefinition Height="150" />
                                 <RowDefinition />
                             </Grid.RowDefinitions>
 
@@ -180,6 +186,7 @@
 
                             </Grid>
 
+
                             <!--  Action  -->
                             <Grid
                                 Grid.Row="1"
@@ -209,21 +216,20 @@
                                     </ComboBox.ItemTemplate>
                                 </ComboBox>
 
-                                <Button
-                                    Grid.Column="2"
-                                    Command="{Binding AddActionCommand}"
-                                    Content="Add"
-                                    Style="{StaticResource AddActionButtonStyle}" />
+                                <!--<Button
+                          Grid.Column="2"
+                          Command="{Binding AddActionCommand}"
+                          Content="Add"
+                          Style="{StaticResource AddActionButtonStyle}" />-->
 
                             </Grid>
 
-                            <!--  Delay  -->
+                            <!--  Value  -->
                             <Grid
                                 Grid.Row="2"
                                 Margin="5,5,5,0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="50" />
-                                    <ColumnDefinition />
                                     <ColumnDefinition />
                                     <ColumnDefinition Width="50" />
                                 </Grid.ColumnDefinitions>
@@ -231,32 +237,34 @@
                                 <TextBlock
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
-                                    Text="Delay: " />
+                                    Text="Value: " />
                                 <TextBox
                                     Grid.Column="1"
                                     Height="25"
                                     Margin="5,5,5,0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
-                                    Text="{Binding Delay}" />
-                                <TextBlock
-                                    Grid.Column="2"
-                                    VerticalAlignment="Center"
-                                    Text="ms" />
+                                    Text="{Binding Value}" />
+
+
+                                <!--<Button
+                          Grid.Column="3"
+                          Background="LightGreen"
+                          Command="{Binding AddDelayCommand}"
+                          Content="Add" />-->
 
                                 <Button
-                                    Grid.Column="3"
-                                    Background="LightGreen"
-                                    Command="{Binding AddDelayCommand}"
-                                    Content="Add" />
+                                    Grid.Column="2"
+                                    Command="{Binding AddActionCommand}"
+                                    Content="Add"
+                                    Style="{StaticResource AddActionButtonStyle}" />
                             </Grid>
 
                             <!--  Action List  -->
                             <ListBox
-                                x:Name="ActionsListBox"
                                 Grid.Row="3"
                                 Margin="5,5,5,0"
-                                ItemsSource="{Binding ActionModelList}"
+                                ItemsSource="{Binding ActionList}"
                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                                 SelectedItem="{Binding SelectedActionItem}">
                                 <ListBox.ItemTemplate>
@@ -282,6 +290,7 @@
 
                                 <Button
                                     Grid.Column="0"
+                                    Height="25"
                                     Background="LightCyan"
                                     Command="{Binding SaveActionCommand}"
                                     Content="Save" />
@@ -290,8 +299,7 @@
                                     Grid.Column="1"
                                     Background="LightPink"
                                     Command="{Binding RemoveActionCommand}"
-                                    Content="Remove"
-                                    IsEnabled="{Binding ElementName=ActionsListBox, Path=SelectedItems.Count}" />
+                                    Content="Remove" />
                             </Grid>
 
                         </Grid>

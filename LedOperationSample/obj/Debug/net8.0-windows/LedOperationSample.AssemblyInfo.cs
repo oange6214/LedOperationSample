@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LedOperationSample")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+256b07a147adb425edc85bbbb25bcd05b04bd5f1")]
 [assembly: System.Reflection.AssemblyProductAttribute("LedOperationSample")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LedOperationSample")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

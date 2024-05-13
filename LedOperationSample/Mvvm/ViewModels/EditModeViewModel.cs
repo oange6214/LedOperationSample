@@ -25,7 +25,7 @@ public partial class EditModeViewModel : ObservableRecipient
 
     #region Properties
 
-    [ObservableProperty] private int _delay = 0;
+    [ObservableProperty] private string _value;
 
     // Target-related properties
     [ObservableProperty] private int _selectedTargetIndex;
@@ -33,17 +33,17 @@ public partial class EditModeViewModel : ObservableRecipient
     public ObservableCollection<TargetType> TargetList { get; } = [];
 
     // Action-related properties
-    public List<ActionType> ActionTypeList => GetActionTypes();
+    public ObservableCollection<ActionType> ActionTypeList => GetActionTypes();
 
     [ObservableProperty] private ActionType _selectedActionTypeItem;
     [ObservableProperty] private ActionModel _selectedActionItem;
-    public ObservableCollection<ActionModel> ActionModelList { get; set; } = [];
+    public ObservableCollection<ActionModel> ActionList { get; set; } = [];
 
     // Step-related properties
     [ObservableProperty] private int _selectedStepIndex;
     [ObservableProperty] private StepModel _selectedStepItem;
     [ObservableProperty] private string _stepEditor;
-    public ObservableCollection<StepModel> StepModelList { get; set; } = [];
+    public ObservableCollection<StepModel> StepList { get; set; } = [];
 
     // Mode-related properties
     [ObservableProperty] private bool _isAutoGenName = true;
@@ -63,20 +63,9 @@ public partial class EditModeViewModel : ObservableRecipient
 
         PropertyChanged += OnPropertyChanged;
 
-        PopulateObservableCollection(Mode.Steps, StepModelList);
+        TargetList = GetTargets();
+        PopulateObservableCollection(Mode.Steps, StepList);
         SetConcatenatedString(Mode.Steps);
-    }
-
-    private void SetConcatenatedString(List<StepModel> steps)
-    {
-        StepEditor = string.Empty;
-
-        foreach (var step in steps)
-        {
-            // Add to textbox
-            string concatenatedString = BuildConcatenatedString(step.Actions) + Constants.LinkString;
-            StepEditor += concatenatedString;
-        }
     }
 
     #region Commands
@@ -88,26 +77,9 @@ public partial class EditModeViewModel : ObservableRecipient
         var action = CreateAction(
             SelectedTargetItem,
             SelectedActionTypeItem,
-            SelectedActionTypeItem.ToString());
+            Value);
 
-        ActionModelList.Add(action);
-    }
-
-    [RelayCommand]
-    private void AddDelay()
-    {
-        if (Delay < Constants.MinimumDelay)
-        {
-            MessageBox.Show($"Need setting delay [{Constants.MinimumDelay} ~ N] (ms)");
-            return;
-        }
-
-        var action = CreateAction(
-            SelectedTargetItem,
-            ActionType.Delay,
-            Delay.ToString());
-
-        ActionModelList.Add(action);
+        ActionList.Add(action);
     }
 
     [RelayCommand]
@@ -119,7 +91,7 @@ public partial class EditModeViewModel : ObservableRecipient
             return;
         }
 
-        var count = ActionModelList.Count(a => a.Type == ActionType.Delay);
+        var count = ActionList.Count(a => a.Type == ActionType.Delay);
 
         if (count == 0)
         {
@@ -128,12 +100,14 @@ public partial class EditModeViewModel : ObservableRecipient
         }
 
         var step = Mode.Steps.First(step => step == SelectedStepItem);
-        step.Actions = [.. ActionModelList];
+        step.Actions = [.. ActionList];
 
-        PopulateObservableCollection(Mode.Steps, StepModelList);
-        ActionModelList.Clear();
+        PopulateObservableCollection(Mode.Steps, StepList);
+        ActionList.Clear();
 
         SetConcatenatedString(Mode.Steps);
+
+        ClearActionList();
     }
 
     [RelayCommand]
@@ -145,38 +119,7 @@ public partial class EditModeViewModel : ObservableRecipient
             return;
         }
 
-        ActionModelList.Remove(SelectedActionItem);
-    }
-
-    [RelayCommand]
-    private void CaptureAction()
-    {
-        if (ActionModelList.Count == 0)
-        {
-            MessageBox.Show("Please set actions.");
-            return;
-        }
-
-        if (!ActionModelList.Any(s => s.Type == ActionType.Delay))
-        {
-            MessageBox.Show("Please set delay.");
-            return;
-        }
-
-        // Add to textbox
-        string concatenatedString = BuildConcatenatedString(ActionModelList) + Constants.LinkString;
-        StepEditor += concatenatedString;
-
-        // Add listview
-        var step = new StepModel
-        {
-            StepId = Guid.NewGuid(),
-            Name = $"S_{Guid.NewGuid().ToString()[..^3]}",
-            Actions = [.. ActionModelList]
-        };
-        StepModelList.Add(step);
-
-        ClearActionList();
+        ActionList.Remove(SelectedActionItem);
     }
 
     [RelayCommand]
@@ -191,8 +134,8 @@ public partial class EditModeViewModel : ObservableRecipient
 
         Mode.Steps.Remove(SelectedStepItem);
 
-        StepModelList.Remove(SelectedStepItem);
-        ActionModelList.Clear();
+        StepList.Remove(SelectedStepItem);
+        ActionList.Clear();
         SetConcatenatedString(Mode.Steps);
     }
 
@@ -223,6 +166,26 @@ public partial class EditModeViewModel : ObservableRecipient
 
     #region Private Methods
 
+    private ObservableCollection<TargetType> GetTargets()
+    {
+        var targetTypes = Enum.GetValues(typeof(TargetType))
+                              .Cast<TargetType>();
+
+        return new ObservableCollection<TargetType>(targetTypes);
+    }
+
+    private void SetConcatenatedString(List<StepModel> steps)
+    {
+        StepEditor = string.Empty;
+
+        foreach (var step in steps)
+        {
+            // Add to textbox
+            string concatenatedString = BuildConcatenatedString(step.Actions);
+            StepEditor += concatenatedString;
+        }
+    }
+
     private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
     {
         switch (e.PropertyName)
@@ -230,13 +193,19 @@ public partial class EditModeViewModel : ObservableRecipient
             case nameof(SelectedModeItem):
                 if (SelectedModeItem != null)
                 {
-                    PopulateObservableCollection(SelectedModeItem.Steps, StepModelList);
+                    PopulateObservableCollection(SelectedModeItem.Steps, StepList);
                 }
                 break;
             case nameof(SelectedStepItem):
                 if (SelectedStepItem != null)
                 {
-                    PopulateObservableCollection(SelectedStepItem.Actions, ActionModelList);
+                    PopulateObservableCollection(SelectedStepItem.Actions, ActionList);
+                }
+                break;
+            case nameof(SelectedActionItem):
+                if (SelectedActionItem != null)
+                {
+                    Value = SelectedActionItem.Value;
                 }
                 break;
         }
@@ -251,21 +220,12 @@ public partial class EditModeViewModel : ObservableRecipient
         }
     }
 
-    private List<ActionType> GetActionTypes()
+    private ObservableCollection<ActionType> GetActionTypes()
     {
-        var actionTypes = Enum.GetValues(typeof(ActionType));
+        var actionTypes = Enum.GetValues(typeof(ActionType))
+                              .Cast<ActionType>();
 
-        var actionTypeList = new List<ActionType>();
-        foreach (ActionType actionType in actionTypes)
-        {
-            if (actionType == ActionType.Delay)
-            {
-                continue;
-            }
-            actionTypeList.Add(actionType);
-        }
-
-        return actionTypeList;
+        return new ObservableCollection<ActionType>(actionTypes);
     }
 
     private ActionModel CreateAction(
@@ -287,25 +247,14 @@ public partial class EditModeViewModel : ObservableRecipient
             Value = actionValue,
         };
     }
-
-    private string BuildConcatenatedString(IEnumerable<ActionModel> actionModes)
+    private string BuildConcatenatedString(IEnumerable<ActionModel> actions)
     {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        foreach (var action in actionModes)
-        {
-            stringBuilder.Append($"{action.Type}::{action.Value}");
-            stringBuilder.Append("+");
-        }
-
-        stringBuilder.Length--; // Remove the last "+" character
-
-        return stringBuilder.ToString();
+        return string.Join("+", actions.Select(action => $"{action.Target}.{action.Type}")) + Constants.LinkString;
     }
     private void ClearActionList()
     {
-        ActionModelList.Clear();
-        Delay = 0;
+        ActionList.Clear();
+        Value = string.Empty;
     }
 
     private void ClearModeDetails()
