@@ -3,7 +3,7 @@
 
 # Build results
 [Bb]in/
-[Ob]bj/
+[Oo]bj/
 
 # NuGet packages
 packages/
