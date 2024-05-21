@@ -14,11 +14,14 @@
 
     <Border d:Background="White">
         <TabControl>
-            <TabItem Header="Job Overview">
+            <TabItem Header="Job Setting">
                 <views:JobView />
             </TabItem>
             <TabItem Header="Create Recipe">
                 <views:RecipeView />
+            </TabItem>
+            <TabItem Header="Wafer Test">
+                <views:WaferSettingView />
             </TabItem>
         </TabControl>
     </Border>

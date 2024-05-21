@@ -11,4 +11,13 @@ public partial class LightModel : ObservableObject
     private bool _isLightOn;
 
     public ModeModel Mode { get; set; }
+
+    public LightModel Copy()
+    {
+        var light = (LightModel)this.MemberwiseClone();
+
+        light.Mode = Mode.Copy();
+
+        return light;
+    }
 }

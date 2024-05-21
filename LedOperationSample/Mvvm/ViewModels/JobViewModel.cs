@@ -4,10 +4,11 @@ using CommunityToolkit.Mvvm.Messaging;
 using LedOperationSample.Commons;
 using LedOperationSample.Helplers;
 using LedOperationSample.Mvvm.Models;
-using LedOperationSample.Mvvm.Views;
+using LedOperationSample.Services;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Reactive.Linq;
 using System.Windows;
 
 namespace LedOperationSample.Mvvm.ViewModels;
@@ -32,11 +33,18 @@ public partial class JobViewModel : ObservableRecipient
     [ObservableProperty] private ModeModel _selectedModeItem;
     [ObservableProperty] private List<ModeModel> _modeCombobox;
 
-    public ObservableCollection<LightModel> Lights { get; set; } = [];
-    public ObservableCollection<LightModel> LightListBox { get; set; } = [];
+    public ObservableCollection<LightModel> LightSettingList { get; set; } = [];
+    public ObservableCollection<LightModel> LightsList { get; set; } = [];
+    public ObservableCollection<LightModel> ActiveLightListView { get; set; } = [];
     public ObservableCollection<string> StateLogList { get; set; } = [];
     public ObservableCollection<ModeModel> ModeList { get; set; } = [];
     public ObservableCollection<ModeModel> ActiveModeList { get; set; } = [];
+
+
+    private readonly IObservable<IEnumerable<LightModel>> _activeLightsObservable;
+    public IObservable<IEnumerable<LightModel>> ActiveLights => _activeLightsObservable;
+
+    private readonly List<LightService> _lightViewModels = new List<LightService>();
 
     #endregion
 
@@ -54,6 +62,9 @@ public partial class JobViewModel : ObservableRecipient
 
         GeneralLightState();
         GetModes();
+
+
+
     }
 
     private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -74,33 +85,30 @@ public partial class JobViewModel : ObservableRecipient
     [RelayCommand]
     private async Task StartMode()
     {
-        if (SelectedModeItem is null)
-        {
-            MessageBox.Show("Please choose an mode.");
-            return;
-        }
 
         _cancellationTokenSource = new CancellationTokenSource();
         CancellationToken cancellationToken = _cancellationTokenSource.Token;
 
         StateLogList.Clear();
+        InitLightState(LightSettingList);
 
         try
         {
-            await StartJob(cancellationToken);
+            await StartJob();
         }
         catch (OperationCanceledException e)
         {
             Debug.WriteLine($"Exception: {e.Message}");
         }
+
     }
 
     [RelayCommand]
-    private void StopMode()
+    private void StopRun()
     {
         _cancellationTokenSource?.Cancel();
 
-        InitLightState(Lights);
+        InitLightState(LightSettingList);
     }
 
     [RelayCommand]
@@ -120,20 +128,24 @@ public partial class JobViewModel : ObservableRecipient
         {
             ModeList.Add(mode);
         }
-    }    
+    }
 
     [RelayCommand]
     private void CleanUI()
     {
-        //InitLightState(Lights);
+        //InitLightState(LightSettingList);
+
+        ActiveLightListView.Clear();
         StateLogList.Clear();
     }
 
     [RelayCommand]
     private void EngineItem(LightModel light)
     {
-        light.Mode = SelectedEngineItem.Copy();
-        LightListBox.Add(light);
+        light.Mode = SelectedEngineItem;
+
+        var newLight = light.Copy();
+        ActiveLightListView.Add(newLight);
     }
     #endregion
 
@@ -155,7 +167,13 @@ public partial class JobViewModel : ObservableRecipient
     {
         for (int i = 0; i < 9; i++)
         {
-            Lights.Add(new LightModel
+            LightSettingList.Add(new LightModel
+            {
+                Tag = $"Led{i + 1}",
+                IsLightOn = false
+            });
+
+            LightsList.Add(new LightModel
             {
                 Tag = $"Led{i + 1}",
                 IsLightOn = false
@@ -171,47 +189,90 @@ public partial class JobViewModel : ObservableRecipient
         }
     }
 
-    private async Task StartJob(CancellationToken cancellationToken)
+    //private async Task StartJob(CancellationToken cancellationToken)
+    //{
+
+    //    foreach(var light in ActiveLightListView)
+    //    {
+    //        var targetLight = LightsList.FirstOrDefault(l => l.Tag == light.Tag);
+
+    //        foreach (var step in light.Mode.Steps)
+    //        {
+    //            StateLogList.Insert(0, $"[{DateTime.UtcNow}] Start step");
+
+    //            if (cancellationToken.IsCancellationRequested)
+    //            {
+    //                return;
+    //            }
+
+    //            foreach (var action in step.Actions)
+    //            {
+    //                switch (action.Type)
+    //                {
+    //                    case ActionType.Turn:
+    //                        if (action.Value == "ON")
+    //                        {
+    //                            targetLight.IsLightOn = true;
+    //                        }
+    //                        if (action.Value == "OFF")
+    //                        {
+    //                            targetLight.IsLightOn = false;
+    //                        }
+    //                        break;
+    //                    case ActionType.Delay:
+    //                        int delayTime = int.Parse(action.Value);
+    //                        await Task.Delay(delayTime, cancellationToken);
+    //                        break;
+    //                }
+
+
+    //                StateLogList.Insert(0, $"[{DateTime.UtcNow}] {targetLight.Tag}.{action.Type}.{action.Value}");
+    //            }
+
+    //            StateLogList.Insert(0, $"[{DateTime.UtcNow}] Finish step");
+    //        }
+    //    }
+    //}
+
+    public async Task StartJob()
     {
-        foreach (var step in SelectedModeItem.Steps)
+        foreach (var lLightService in _lightViewModels)
         {
-            StateLogList.Insert(0, $"[{DateTime.UtcNow}] Start step");
+            LightModel light = lLightService.Light;
+            var mode = light.Mode;
 
-            if (cancellationToken.IsCancellationRequested)
+            foreach (var step in mode.Steps)
             {
-                return;
-            }
-
-            foreach (var action in step.Actions)
-            {
-                var light = Lights.First(l => l.Tag == action.Target.ToString());
-
-                switch (action.Type)
+                foreach(var action in step.Actions)
                 {
-                    case ActionType.Turn:
-                        if (action.Value == "ON")
-                        {
-                            light.IsLightOn = true;
-                        }
-                        if (action.Value == "OFF")
-                        {
-                            light.IsLightOn = false;
-                        }
-                        break;
-                    case ActionType.Delay:
-                        int delayTime = int.Parse(action.Value);
-                        await Task.Delay(delayTime, cancellationToken);
-                        break;
+                    switch (action.Type)
+                    {
+                        case ActionType.Turn:
+                            if (action.Value == "ON")
+                            {
+                                light.IsLightOn = true;
+                            }
+                            else if (action.Value == "OFF")
+                            {
+                                light.IsLightOn = false;
+                            }
+                            break;
+                        case ActionType.Delay:
+                            int delayTime = int.Parse(action.Value);
+                            await Task.Delay(delayTime);
+                            break;
+                    }
                 }
 
- 
-                StateLogList.Insert(0, $"[{DateTime.UtcNow}] {light.Tag}.{action.Type}.{action.Value}");
+                lLightService.Light = light;
             }
-
-            StateLogList.Insert(0, $"[{DateTime.UtcNow}] Finish step");
         }
     }
 
     #endregion
+
+
+
+
 
 }

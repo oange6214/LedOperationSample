@@ -1,0 +1,119 @@
+﻿<UserControl
+    x:Class="LedOperationSample.Mvvm.Views.WaferSettingView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:LedOperationSample.Commons.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+
+    <Border
+        d:Height="720"
+        d:Width="1280"
+        Background="White">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <Viewbox Grid.Column="0">
+                <StackPanel
+                    Width="150"
+                    Margin="5,5,10,5">
+                    <controls:WaferItem
+                        Margin="0,3,0,3"
+                        Slot="20"
+                        Color="LightGray" />
+                    <controls:WaferItem
+                        Margin="0,3,0,3"
+                        Slot="19"
+                        Color="LightGray" />
+                    <controls:WaferItem
+                        Margin="0,3,0,3"
+                        Slot="18"
+                        Color="LightGray" />
+                    <controls:WaferItem
+                        Margin="0,3,0,3"
+                        Slot="17"
+                        Color="LightGray" />
+                    <controls:WaferItem
+                        Margin="0,3,0,3"
+                        Slot="16"
+                        Color="LightGray" />
+                    <controls:WaferItem
+                        Margin="0,3,0,3"
+                        Slot="15"
+                        Color="LightGray" />
+                    <controls:WaferItem
+                        Margin="0,3,0,3"
+                        Slot="14"
+                        Color="LightGray" />
+                    <controls:WaferItem
+                        Margin="0,3,0,3"
+                        Slot="13"
+                        Color="LightGray" />
+                    <controls:WaferItem
+                        Margin="0,3,0,3"
+                        Slot="12"
+                        Color="LightGray" />
+                    <controls:WaferItem
+                        Margin="0,3,0,3"
+                        Slot="11"
+                        Color="LightGray" />
+                    <controls:WaferItem
+                        Margin="0,3,0,3"
+                        Slot="10"
+                        Color="LightGray" />
+                    <controls:WaferItem
+                        Margin="0,3,0,3"
+                        Slot="9"
+                        Color="LightGray" />
+                    <controls:WaferItem
+                        Margin="0,3,0,3"
+                        Slot="8"
+                        Color="LightGray" />
+                    <controls:WaferItem
+                        Margin="0,3,0,3"
+                        Slot="7"
+                        Color="LightGray" />
+                    <controls:WaferItem
+                        Margin="0,3,0,3"
+                        Slot="6"
+                        Color="LightGray" />
+                    <controls:WaferItem
+                        Margin="0,3,0,3"
+                        Slot="5"
+                        Color="LightGray" />
+                    <controls:WaferItem
+                        Margin="0,3,0,3"
+                        Slot="4"
+                        Color="LightGray" />
+                    <controls:WaferItem
+                        Margin="0,3,0,3"
+                        Slot="3"
+                        Color="LightGray" />
+                    <controls:WaferItem
+                        Margin="0,3,0,3"
+                        Slot="2"
+                        Color="LightGray" />
+                    <controls:WaferItem
+                        Margin="0,3,0,3"
+                        Slot="1"
+                        Color="LightGray" />
+                </StackPanel>
+            </Viewbox>
+
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+
+                <DataGrid Grid.Row="1" />
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>

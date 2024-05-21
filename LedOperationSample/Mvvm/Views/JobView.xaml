@@ -19,6 +19,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <converters:HasCountIsTrueConverter x:Key="HasCountIsTrueConverter" />
+            <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -33,7 +34,6 @@
                 <ColumnDefinition />
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
-
 
             <!--  Light graph  -->
             <Grid
@@ -89,8 +89,7 @@
                             Grid.Row="2"
                             Margin="5,5,5,0"
                             IsEnabled="{Binding SelectedEngineIndex, Converter={StaticResource HasCountIsTrueConverter}}"
-                            ItemsSource="{Binding Lights}">
-
+                            ItemsSource="{Binding LightSettingList}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Grid>
@@ -112,6 +111,7 @@
                                             Command="{Binding ElementName=root, Path=DataContext.EngineItemCommand}"
                                             CommandParameter="{Binding .}"
                                             IsChecked="{Binding IsLightOn}"
+                                            IsEnabled="{Binding IsLightOn, Converter={StaticResource InverseBooleanConverter}}"
                                             Style="{StaticResource TrafficLightToggleButtonStyle}" />
                                         <TextBlock
                                             Grid.Column="2"
@@ -127,114 +127,111 @@
             </Grid>
 
             <!--  List & Controls  -->
-            <GroupBox
+            <Grid
                 Grid.Column="1"
-                Margin="5"
-                Header="Mode">
-                <Grid Margin="5">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="300" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
+                Margin="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition MaxHeight="300" />
+                </Grid.RowDefinitions>
 
-                    <!--  Mode list  -->
-                    <GroupBox
-                        Grid.Column="0"
-                        Margin="5,5,5,0"
-                        Header="Mode list">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="auto" />
-                                <RowDefinition />
-                                <RowDefinition Height="auto" />
-                            </Grid.RowDefinitions>
+                <!--  Active  -->
+                <GroupBox
+                    Grid.Column="1"
+                    Margin="5,5,5,0"
+                    Header="Active">
+                    <Grid Margin="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
 
-                            <ListView
-                                x:Name="ModeListView"
-                                Grid.Row="1"
-                                Margin="5,5,5,0"
-                                ItemsSource="{Binding ModeList}"
-                                ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                SelectedItem="{Binding SelectedModeItem}">
-                                <ListView.ItemTemplate>
-                                    <DataTemplate DataType="{x:Type model:ModeModel}">
-                                        <TextBlock Text="{Binding Name}" />
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
-                        </Grid>
-                    </GroupBox>
+                        <ItemsControl
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            ItemsSource="{Binding LightsList}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="auto" />
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock
+                                            Grid.Column="0"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Tag}" />
+                                        <ToggleButton
+                                            Grid.Column="1"
+                                            Width="100"
+                                            Height="25"
+                                            IsChecked="{Binding IsLightOn}"
+                                            IsEnabled="False"
+                                            Style="{StaticResource TrafficLightToggleButtonStyle}" />
+                                        <TextBlock
+                                            Grid.Column="2"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Mode.Name}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
 
-                    <!--  Active List  -->
-                    <GroupBox
-                        Grid.Column="1"
-                        Margin="5,5,5,0"
-                        Header="Active">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="200" />
-                                <RowDefinition Height="auto" />
-                            </Grid.RowDefinitions>
+                        <ListView
+                            x:Name="ActiveLightListView"
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            ItemsSource="{Binding ActiveLightListView}"
+                            ScrollViewer.VerticalScrollBarVisibility="Auto">
+                            <ListView.ItemTemplate>
+                                <DataTemplate DataType="{x:Type model:LightModel}">
+                                    <Border Background="LightGray">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="50" />
+                                                <ColumnDefinition Width="200" />
+                                                <ColumnDefinition Width="50" />
+                                                <ColumnDefinition Width="50" />
+                                            </Grid.ColumnDefinitions>
 
-                            <ListView
-                                x:Name="ActiveListView"
-                                Grid.Row="0"
-                                Margin="5,5,5,0"
-                                ItemsSource="{Binding LightListBox}"
-                                ScrollViewer.VerticalScrollBarVisibility="Auto">
-                                <ListView.ItemTemplate>
-                                    <DataTemplate DataType="{x:Type model:LightModel}">
-                                        <Border Background="LightGray">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="50" />
-                                                    <ColumnDefinition Width="200" />
-                                                    <ColumnDefinition Width="50" />
-                                                    <ColumnDefinition Width="50" />
-                                                </Grid.ColumnDefinitions>
+                                            <TextBlock
+                                                Grid.Column="0"
+                                                Text="{Binding Tag}" />
 
-                                                <TextBlock
-                                                    Grid.Column="0"
-                                                    Text="{Binding Tag}" />
+                                            <TextBlock
+                                                Grid.Column="1"
+                                                Text="{Binding Mode.Name}" />
 
-                                                <TextBlock
-                                                    Grid.Column="1"
-                                                    Text="{Binding Mode.Name}" />
+                                            <TextBlock
+                                                Grid.Column="2"
+                                                Text="{Binding Mode.Steps.Count}" />
 
-                                                <TextBlock
-                                                    Grid.Column="2"
-                                                    Text="{Binding Mode.Steps.Count}" />
+                                            <TextBlock
+                                                Grid.Column="3"
+                                                Text="{Binding IsLightOn}" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Grid>
+                </GroupBox>
 
-                                                <TextBlock
-                                                    Grid.Column="3"
-                                                    Text="{Binding IsLightOn}" />
-                                            </Grid>
-                                        </Border>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
-
-                            <GroupBox
-                                Grid.Row="1"
-                                Margin="5,5,5,0"
-                                Header="Log info">
-                                <ListView
-                                    Margin="5"
-                                    ItemsSource="{Binding StateLogList}"
-                                    ScrollViewer.CanContentScroll="True"
-                                    ScrollViewer.VerticalScrollBarVisibility="Auto" />
-                            </GroupBox>
-
-                            <Button
-                                Grid.Row="2"
-                                Margin="5"
-                                Command="{Binding CleanUICommand}"
-                                Content="Clean" />
-                        </Grid>
-                    </GroupBox>
-                </Grid>
-            </GroupBox>
+                <!--  Log Info  -->
+                <GroupBox
+                    Grid.Row="1"
+                    Margin="5,5,5,0"
+                    Header="Log info">
+                    <ListView
+                        Margin="5"
+                        ItemsSource="{Binding StateLogList}"
+                        ScrollViewer.CanContentScroll="True"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto" />
+                </GroupBox>
+            </Grid>
 
             <!--  Controls  -->
             <StackPanel
@@ -243,17 +240,22 @@
                 Margin="5">
 
                 <Button
+                    x:Name="StartModeBtn"
                     Height="50"
                     Background="LightGreen"
                     Command="{Binding StartModeCommand}"
                     Content="Start Run"
-                    IsEnabled="{Binding ElementName=ModeListView, Path=SelectedItems.Count}" />
+                    IsEnabled="{Binding ActiveLightListView.Count}" />
                 <Button
                     Height="50"
-                    Command="{Binding CancelJobCommand}"
+                    Command="{Binding StopRunCommand}"
                     Content="Stop Run"
-                    IsEnabled="{Binding ElementName=ModeListView, Path=SelectedItems.Count}" />
-
+                    IsEnabled="{Binding ActiveLightListView.Count}" />
+                <Button
+                    Height="50"
+                    Command="{Binding CleanUICommand}"
+                    Content="Clean"
+                    IsEnabled="{Binding ElementName=StartModeBtn, Path=IsEnabled}" />
             </StackPanel>
         </Grid>
 

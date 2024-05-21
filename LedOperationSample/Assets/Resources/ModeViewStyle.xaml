@@ -15,11 +15,8 @@
             <SolidColorBrush
                 x:Key="LightOffBrush"
                 Color="{x:Static Colors.DarkGray}" />
-
         </Style.Resources>
 
-        <!--<Setter Property="Width" Value="{TemplateBinding Width}" />-->
-        <!--<Setter Property="Height" Value="{TemplateBinding Height}" />-->
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ToggleButton}">
@@ -29,10 +26,10 @@
                                 x:Name="led"
                                 Width="{TemplateBinding Width}"
                                 Height="{TemplateBinding Height}"
+                                Margin="3"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                Background="{StaticResource LightOnBrush}"
-                                CornerRadius="5" />
+                                Background="{StaticResource LightOnBrush}" />
                             <ContentPresenter
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center" />

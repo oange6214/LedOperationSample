@@ -7,6 +7,9 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Commons\Controls\WaferItem.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Mvvm\Views\CreateModeView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -19,9 +22,15 @@
     <Compile Update="Mvvm\Views\RecipeView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Mvvm\Views\WaferSettingView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Assets\Resources\ModeViewStyle.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Commons\Controls\WaferItem.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Mvvm\Views\CreateModeView.xaml">
@@ -34,6 +43,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Mvvm\Views\RecipeView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Mvvm\Views\WaferSettingView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Windows\MainWindow.xaml">
